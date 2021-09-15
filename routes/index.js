@@ -1,12 +1,13 @@
-var express = require('express');
-var index = express.Router();
+const express = require('express');
+
+const index = express.Router();
 
 // Import routes
 
-var test = require('./test');
+const register = require('./register');
 
 // Create routing
 
-index.use('/test', test)
+index.use('/register', register)
 
 module.exports = index;
