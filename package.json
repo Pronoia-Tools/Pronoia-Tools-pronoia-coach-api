@@ -13,10 +13,10 @@
     "express": "~4.16.1",
     "firebase": "^9.0.2",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
+    "jade": "^1.9.2",
     "morgan": "~1.9.1",
     "sequelize": "^6.6.5",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
