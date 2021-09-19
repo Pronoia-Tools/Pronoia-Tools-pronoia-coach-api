@@ -1,6 +1,6 @@
 const express = require("express");
 const login = express.Router();
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+const { getAuth, signInWithEmailAndPassword } = require("firebase/auth");
 const { check, validationResult } = require("express-validator");
 
 login.get(
