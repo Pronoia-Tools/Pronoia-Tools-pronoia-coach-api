@@ -1,12 +1,10 @@
 //  DB Connetion
-
 const { Sequelize } = require('sequelize');
 
 // Connetion with sequelize to do tests
-
 const db = new Sequelize({
   dialect: 'sqlite',
-  storage: './Database/database.sqlite'
+  storage: './database.sqlite'
 });
 
 // DB connetion with more parameters
