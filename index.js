@@ -12,8 +12,8 @@ const logger = require('./config/logger');
  * Establish Connections
  */
 
-const db = require('./db');
-const firebase = require('./firebase');
+const db = require('./config/db');
+const firebase = require('./config/firebase');
 
 /**
  * Create HTTP server.

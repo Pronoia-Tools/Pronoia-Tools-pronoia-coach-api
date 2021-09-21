@@ -21,15 +21,16 @@ const firebaseConfig = {
 
 // module.exports = firebase;
 
+let firebase;
 
 if (getApps().length === 0) {
     try { 
-        const firebase = initializeApp(firebaseConfig);
+        firebase = initializeApp(firebaseConfig);
     } catch (e) { 
         console.log(e); 
     }
 } else {
-    const firebase = getApp();
+    firebase = getApp();
 }
 
 

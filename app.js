@@ -5,7 +5,7 @@ const xss = require('xss-clean');
 const compression = require('compression');
 const cors = require('cors');
 var cookieParser = require('cookie-parser');
-const routes = require('/routes')
+const routes = require('./routes')
 var createError = require('http-errors');
 const config = require('./config/config');
 
