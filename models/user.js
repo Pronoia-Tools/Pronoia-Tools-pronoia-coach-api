@@ -1,12 +1,16 @@
 const { DataTypes } = require('sequelize');
 const db = require('../Database/db_connetion')
 
-const Users = db.define('Users', {
+const User = db.define('User', {
   // Model attributes are defined here
   id: {
     type: DataTypes.STRING,
     allowNull: false,
     primaryKey: true,
+  },
+  uuid: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   firstname: {
     type: DataTypes.STRING,
@@ -22,7 +26,7 @@ const Users = db.define('Users', {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   country: {
     type: DataTypes.STRING,
@@ -31,4 +35,4 @@ const Users = db.define('Users', {
 });
 
 
-module.exports = Users;
+module.exports = User;
