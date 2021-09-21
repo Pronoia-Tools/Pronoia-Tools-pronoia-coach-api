@@ -30,6 +30,11 @@ To start the app just run:
 npm run dev
 ```
 
+## Troubelshooting
+
+### Backend: Error (auth/configuration-not-found)
+
+This means you haven't enable authentication in your firebase account.
 ## Notes
 
 When we want to start adding functioanlity lets visit 

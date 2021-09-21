@@ -17,6 +17,17 @@ const envVarsSchema = Joi.object()
     FIREBASE_MESSAGING_SENDER_ID: Joi.string().required().description('Firebase Messaging Sender Id'),
     FIREBASE_APP_ID: Joi.string().required().description('Firebase App Id'),
     FIREBASE_MEASUREMENT_ID: Joi.string().required().description('Firebase Measurement Id'),
+    FIREBASE_ADMIN_TYPE: Joi.string().required().description('Firebase Admin Type.'),
+    FIREBASE_ADMIN_PROJECT_ID: Joi.string().required().description('Firebase Admin Project Id.'),
+    FIREBASE_ADMIN_PRIVATE_KEY_ID: Joi.string().required().description('Firebase Admin Private Key Id.'),
+    FIREBASE_ADMIN_PRIVATE_KEY: Joi.string().required().description('Firebase Admin Private Key.'),
+    FIREBASE_ADMIN_CLIENT_EMAIL: Joi.string().required().description('Firebase Admin Client Email.'),
+    FIREBASE_ADMIN_CLIENT_ID: Joi.string().required().description('Firebase Admin Client Id.'),
+    FIREBASE_ADMIN_AUTH_URI: Joi.string().required().description('Firebase Admin Auth Uri.'),
+    FIREBASE_ADMIN_TOKEN_URI: Joi.string().required().description('Firebase Admin Token Uri.'),
+    FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL: Joi.string().required().description('Firebase Admin Auth Provider.'),
+    FIREBASE_ADMIN_CLIENT_X509_CERT_URL: Joi.string().required().description('Firebase Admin Client Cert Url.'),
+
     })
   .unknown();
 
@@ -37,6 +48,18 @@ module.exports = {
     messagingSenderId: envVars.FIREBASE_MESSAGING_SENDER_ID,
     appId: envVars.FIREBASE_APP_ID,
     measurementId: envVars.FIREBASE_MEASUREMENT_ID
+  },
+  serviceAccount: {
+    'type': envVars.FIREBASE_ADMIN_TYPE,
+    'project_id': envVars.FIREBASE_ADMIN_PROJECT_ID,
+    'private_key_id': envVars.FIREBASE_ADMIN_PRIVATE_KEY_ID,
+    'private_key': envVars.FIREBASE_ADMIN_PRIVATE_KEY,
+    'client_email': envVars.FIREBASE_ADMIN_CLIENT_EMAIL,
+    'client_id': envVars.FIREBASE_ADMIN_CLIENT_ID,
+    'auth_uri': envVars.FIREBASE_ADMIN_AUTH_URI,
+    'token_uri': envVars.FIREBASE_ADMIN_TOKEN_URI,
+    'auth_provider_x509_cert_url': envVars.FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL,
+    'client_x509_cert_url': envVars.FIREBASE_ADMIN_AUTH_PROVIDER_X509_CERT_URL
   },
   db_settings: {
     dialect: envVars.DB_DIALECT,

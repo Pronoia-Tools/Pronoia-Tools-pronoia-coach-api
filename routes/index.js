@@ -3,18 +3,13 @@ const router = express.Router();
 const config = require('../config/config');
 
 // Import routes
-const register = require("./register");
-const login = require("./login");
+const authRoute = require('./auth.route');
 
 // Create routing
 const defaultRoutes = [
     {
-      path: '/register',
-      route: register,
-    },
-    {
-      path: '/login',
-      route: login,
+      path: '/auth',
+      route: authRoute,
     },
   ];
   
@@ -27,7 +22,7 @@ const devRoutes = [
 ];
 
 defaultRoutes.forEach((route) => {
-    router.use(route.path, route.route);
+  router.use(route.path, route.route);
 });
 
 /* istanbul ignore next */
