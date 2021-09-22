@@ -57,6 +57,7 @@ const register = catchAsync(async (req, res) => {
   })
   .then((user) => {
     res.status(httpStatus.OK).json({
+      user: pick(user.dataValues, ['firstname', 'lastname', 'email', 'country']),
       "Created At": user.dataValues.createdAt,
       id: userPass[0],
     });
