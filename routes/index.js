@@ -4,12 +4,17 @@ const config = require('../config/config');
 
 // Import routes
 const authRoute = require('./auth.route');
+const workbookRoute = require('./workbook.route');
 
 // Create routing
 const defaultRoutes = [
     {
       path: '/auth',
       route: authRoute,
+    },
+    {
+      path: '/workbook',
+      route: workbookRoute,
     },
   ];
   
