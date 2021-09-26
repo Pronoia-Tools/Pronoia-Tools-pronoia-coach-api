@@ -13,7 +13,12 @@ const pick = require('../utils/pick');
 const Workbook = require('../models/workbook');
 
 const get = async (req, res) => {
-
+  Workbook.findAll()
+    .then((response) => {
+      res.json(response);
+    }).catch((error) => {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+    });
 }
   
 const post = async (req, res) => {

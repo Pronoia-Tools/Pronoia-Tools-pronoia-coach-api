@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const { password } = require('./custom.validation');
 
-const workbook = {
+const post = {
   body: Joi.object().keys({
     title: Joi.string().required(),
     price: Joi.number().required(),
@@ -15,5 +15,5 @@ const workbook = {
 
 
 module.exports = {
-  workbook,
+  post,
 };
