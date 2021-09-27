@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js"
+    "start": "node app.js",
+    "dev": "cross-env NODE_ENV=development nodemon app.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cluster": "^0.7.7",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
