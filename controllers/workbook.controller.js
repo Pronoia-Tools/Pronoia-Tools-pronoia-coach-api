@@ -45,6 +45,30 @@ const post = async (req, res) => {
   });
 }
 
+const updateById = async (req, res) => {
+  let body = req.body;
+  let { id, title, price, edition, categories, description, language, image } = body;
+  let updateWorkbook = {
+    title,
+    price,
+    edition,
+    categories,
+    description,
+    language,
+    image
+};
+await Workbook.update(updateWorkbook, { where: { id: id } })
+.then((workbook) => {
+  res.status(httpStatus.OK).json({
+    workbook: pick(workbook.dataValues, ['id']),
+    "Updated At": workbook.dataValues.updatedAt,
+  });
+})
+.catch((error) => {
+  throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+});
+}
+
 const deleteById = async (req, res) => {
   let body = req.body;
   let { id } = body;
@@ -64,4 +88,5 @@ module.exports = {
   get,
   post,
   deleteById,
+  updateById
 };

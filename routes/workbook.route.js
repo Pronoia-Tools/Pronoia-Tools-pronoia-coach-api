@@ -7,5 +7,6 @@ const { post, deleteById } = require('../validations/workbook.validation');
 router.get('/get', workbookController.get);
 router.post('/post', validate(post), workbookController.post);
 router.get('/delete', validate(deleteById), workbookController.deleteById);
+router.get('/update', workbookController.updateById);
 
 module.exports = router;
