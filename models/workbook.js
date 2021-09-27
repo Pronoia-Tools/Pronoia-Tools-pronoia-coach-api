@@ -21,7 +21,7 @@ const Workbook = db.define('Workbook', {
     allowNull: false,
   },
   categories: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
+    type: DataTypes.STRING,
     allowNull: true,
   },
   description: {
@@ -31,7 +31,7 @@ const Workbook = db.define('Workbook', {
     type: DataTypes.STRING,
   },
   image: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
+    type: DataTypes.STRING,
   }
 });
 
