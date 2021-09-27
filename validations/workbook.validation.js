@@ -13,7 +13,15 @@ const post = {
   }),
 };
 
+const deleteById = {
+  body: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+};
+
+
 
 module.exports = {
   post,
+  deleteById,
 };

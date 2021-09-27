@@ -44,8 +44,24 @@ const post = async (req, res) => {
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
   });
 }
+
+const deleteById = async (req, res) => {
+  let body = req.body;
+  let { id } = body;
+  await Workbook.destroy({ where: { id: id } })
+  .then((workbook) => {
+    res.status(httpStatus.OK).json({
+      workbook: pick(workbook.dataValues, ['id']),
+      "Deleted At": workbook.dataValues.deleteAt,
+    });
+  })
+  .catch((error) => {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+  });
+}
   
 module.exports = {
   get,
-  post
+  post,
+  deleteById,
 };
