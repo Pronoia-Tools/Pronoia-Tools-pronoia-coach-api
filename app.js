@@ -1,60 +1,89 @@
-const express = require('express');
-const morgan = require('./config/morgan');
-const helmet = require('helmet');
-const xss = require('xss-clean');
-const compression = require('compression');
-const cors = require('cors');
-var cookieParser = require('cookie-parser');
-const routes = require('./routes')
-const ApiError = require('./utils/ApiError');
-const httpStatus = require('http-status');
-const { errorConverter, errorHandler } = require('./middlewares/error');
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+const app = require('./express-app');
+const cluster = require('cluster');
 const config = require('./config/config');
+const logger = require('./config/logger');
 
-const app = express();
-app.use(morgan.successHandler);
-app.use(morgan.errorHandler);
+/**
+ * Handle clusters configuration
+ */
+var workers = {};
+var count = 1;
+if(config.env === 'production') {
+  count = require('os').cpus().length;
+}
+/**
+ * Establish Connections
+ */
 
-// // view engine setup - it is api only
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
-// app.use(express.static(path.join(__dirname, 'public')));
+const db = require('./config/db');
+const firebase = require('./config/firebase');
 
-// set security HTTP headers
-app.use(helmet());
+/**
+ * Create HTTP server.
+ */
+if (cluster.isMaster) {
+  for (var i = 0; i < count; i++) {
+    spawn();
+  }
+  cluster.on('death', function(worker) {
+    console.log('worker ' + worker.pid + ' died. spawning a new process...');
+    delete workers[worker.pid];
+    spawn();
+  });
+} else {
+  let server = app.listen(config.port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
 
-// parse json request body
-app.use(express.json());
 
-// parse urlencoded request body
-app.use(express.urlencoded({ extended: false }));
+/**
+ * Workers creation funciton
+ */
+function spawn() {
+  var worker = cluster.fork();
+  workers[worker.pid] = worker;
+  return worker;
+}
 
-// sanitize request data
-app.use(xss());
+/**
+ * Event listener for HTTP server "listening" event.
+ */
 
-// gzip compression
-app.use(compression());
+function onListening() {
+  logger.info(`Listening to port ${config.port}`);
+}
 
-// enable cors
-app.use(cors());
-app.options('*', cors());
+/**
+ * Event listener for HTTP server "error" event.
+ */
 
-app.use(cookieParser());
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
 
-// This is to route other routes
-app.use('/', routes);
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
-});
-
-// convert error to ApiError, if needed
-app.use(errorConverter);
-
-// handle error
-app.use(errorHandler);
-
-// console.log(app._router.stack)
-
-module.exports = app;
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
