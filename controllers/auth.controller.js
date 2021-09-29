@@ -71,7 +71,6 @@ const register = catchAsync(async (req, res) => {
       });
     })
     .catch((error) => {
-      console.log("errorcito papu");
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
     });
 });
