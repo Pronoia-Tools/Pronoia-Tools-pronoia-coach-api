@@ -1,94 +1,113 @@
 /** Node Modules */
-const httpStatus = require('http-status');
+const httpStatus = require("http-status");
 const { getAuth, signInWithEmailAndPassword } = require("firebase/auth");
 
-
 /** Custom Modules */
-const admin = require('../config/firebaseAdmin').firebase_admin_connect();
-const catchAsync = require('../utils/catchAsync');
-const ApiError = require('../utils/ApiError');
-const pick = require('../utils/pick');
+const admin = require("../config/firebaseAdmin").firebase_admin_connect();
+const catchAsync = require("../utils/catchAsync");
+const ApiError = require("../utils/ApiError");
+const pick = require("../utils/pick");
 
 /** Schemas */
-const User = require('../models/user');
+const User = require("../models/user");
 
 const register = catchAsync(async (req, res) => {
   let body = req.body;
   let { firstname, lastname, email, password, country } = body;
 
   const userPass = [];
-  await admin.auth().createUser({
-    email: email,
-    password: password,
-    displayName: firstname + ' ' + lastname,
-    disabled: false,
-  }).then((userCredential) => {
-    // Signed in
-    userPass.push(userCredential.providerData[0].uid) 
-    userPass.push(userCredential.uid)
-  })
-  .catch((error) => {
-    if (error.code === "auth/email-already-in-use") {
-      code = httpStatus.BAD_REQUEST;
-      message = error.message;
-    } else if (error.code === "auth/invalid-email"){
-      code = httpStatus.BAD_REQUEST;
-      message = error.message;
-    } else if (error.code === "auth/operation-not-allowed") {
-      code = httpStatus.FORBIDDEN;
-      message = error.message;
-    } else if (error.code === "auth/weak-password") {
-      code = httpStatus.BAD_REQUEST;
-      message = error.message;
-    } else {
-      code = httpStatus.INTERNAL_SERVER_ERROR;
-      message = error.message;
-    }
-    throw new ApiError(code, error.message);
-  });
-  
+  await admin
+    .auth()
+    .createUser({
+      email: email,
+      password: password,
+      displayName: firstname + " " + lastname,
+      disabled: false,
+    })
+    .then((userCredential) => {
+      // Signed in
+      console.log(userCredential);
+      userPass.push(userCredential.providerData[0].uid);
+      userPass.push(userCredential.uid);
+    })
+    .catch((error) => {
+      if (error.code === "auth/email-already-exists") {
+        code = httpStatus.BAD_REQUEST;
+        message = error.message;
+      } else if (error.code === "auth/invalid-email") {
+        code = httpStatus.BAD_REQUEST;
+        message = error.message;
+      } else if (error.code === "auth/operation-not-allowed") {
+        code = httpStatus.FORBIDDEN;
+        message = error.message;
+      } else if (error.code === "auth/weak-password") {
+        code = httpStatus.BAD_REQUEST;
+        message = error.message;
+      } else {
+        code = httpStatus.INTERNAL_SERVER_ERROR;
+        message = error.message;
+      }
+      throw new ApiError(code, error.message);
+    });
+
   await User.create({
     id: userPass[0],
     uuid: userPass[1],
     firstname,
     lastname,
     email,
-    country, 
+    country,
   })
-  .then((user) => {
-    res.status(httpStatus.OK).json({
-      user: pick(user.dataValues, ['firstname', 'lastname', 'email', 'country']),
-      "Created At": user.dataValues.createdAt,
-      id: userPass[0],
+    .then((user) => {
+      res.status(httpStatus.OK).json({
+        user: pick(user.dataValues, [
+          "firstname",
+          "lastname",
+          "email",
+          "country",
+        ]),
+        "Created At": user.dataValues.createdAt,
+        id: userPass[0],
+      });
+    })
+    .catch((error) => {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
     });
-  })
-  .catch((error) => {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
-  });
 });
 
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
-  let token = '';
+  let token = "";
   await signInWithEmailAndPassword(getAuth(), email, password)
-  .then((userCredential) => {
-    token = userCredential.user.accessToken
-  })
-  .catch((error) => {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+    .then((userCredential) => {
+      token = userCredential.user.accessToken;
+    })
+    .catch((error) => {
+      throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+    });
+
+  if (token === "")
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      "Could not retrieve token."
+    );
+
+  User.getTableName();
+  let user = await User.findByPk(email).catch((error) => {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error);
   });
 
-  if(token === '') throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Could not retrieve token.');
+  if (user === null)
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      "Could not retrieve user data."
+    );
 
-  User.getTableName()
-  let user = await User.findByPk(email).catch((error) => {throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error)});
-  
-  if(user === null) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Could not retrieve user data.');
-
-  user = pick(user.dataValues, ['firstname', 'lastname', 'email', 'country'])
+  user = pick(user.dataValues, ["firstname", "lastname", "email", "country"]);
   res.status(httpStatus.OK).json({
     user: user,
-    token, token
+    token,
+    token,
   });
 });
 
