@@ -46,8 +46,9 @@ const post = async (req, res) => {
 }
 
 const updateById = async (req, res) => {
+  let id  =  req.params.id
   let body = req.body;
-  let { id, title, price, edition, categories, description, language, image } = body;
+  let { title, price, edition, categories, description, language, image } = body;
   let updateWorkbook = {
     title,
     price,
@@ -70,8 +71,7 @@ await Workbook.update(updateWorkbook, { where: { id: id } })
 }
 
 const deleteById = async (req, res) => {
-  let body = req.body;
-  let { id } = body;
+  let id =  req.params.id
   await Workbook.destroy({ where: { id: id } })
   .then((workbook) => {
     res.status(httpStatus.OK).json({
